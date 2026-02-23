@@ -9,7 +9,7 @@ BUILD_VERSION = 1
 
 def get_mtimes():
     mtimes = {}
-    for p in Path("src").rglob("*.pysx"):
+    for p in Path("src").rglob("*.reactxpy"):
         mtimes[str(p)] = p.stat().st_mtime
     return mtimes
 
@@ -42,7 +42,7 @@ def serve():
 
 def main():
     global BUILD_VERSION
-    print("🚀 Starting PYSX Live Development Server...")
+    print("🚀 Starting reactxpy Live Development Server...")
     subprocess.run([sys.executable, "build.py"], check=False)
     
     server_thread = threading.Thread(target=serve, daemon=True)

@@ -4,21 +4,21 @@ import sys
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
 
-class PysxBuildExt(build_ext):
-    """Custom command to build the C++ pysx compiler using g++."""
+class ReactxpyBuildExt(build_ext):
+    """Custom command to build the C++ reactxpy compiler using g++."""
     def run(self):
         # We need g++ to compile the PYSX compiler
         try:
             subprocess.check_output(['g++', '--version'])
         except OSError:
-            raise RuntimeError("g++ must be installed to build PYSX")
+            raise RuntimeError("g++ must be installed to build ReactXPy")
 
         source_dir = os.path.abspath("src")
         # Ensure we place the binary inside the Python package directory
-        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath("pysx.dummy")))
+        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath("reactxpy.dummy")))
         
         is_windows = sys.platform == "win32"
-        binary_name = "pysx_compiler.exe" if is_windows else "pysx_compiler"
+        binary_name = "reactxpy_compiler.exe" if is_windows else "reactxpy_compiler"
         output_binary = os.path.join(extdir, binary_name)
         
         # Ensure the output directory exists
@@ -36,24 +36,24 @@ class PysxBuildExt(build_ext):
         # Compile command
         compile_cmd = ["g++"] + sources + ["-o", output_binary]
         
-        print(f"Building PYSX compiler: {' '.join(compile_cmd)}")
+        print(f"Building ReactXPy compiler: {' '.join(compile_cmd)}")
         subprocess.check_call(compile_cmd)
 
 # Define a dummy extension to trigger our custom build step
-pysx_ext = Extension("pysx.dummy", sources=[])
+reactxpy_ext = Extension("reactxpy.dummy", sources=[])
 
 setup(
-    name="pysx",
+    name="reactxpy",
     version="0.1.0",
-    description="Python-Syntax (PYSX) compiler for web applications.",
+    description="ReactXPy compiler for web applications.",
     author="Anish Kumar",
     packages=find_packages(),
-    ext_modules=[pysx_ext],
-    cmdclass={"build_ext": PysxBuildExt},
+    ext_modules=[reactxpy_ext],
+    cmdclass={"build_ext": ReactxpyBuildExt},
     entry_points={
         "console_scripts": [
-            "pysx = pysx.cli:main",
-            "create-pysx-app = pysx.create_app:main",
+            "reactxpy = reactxpy.cli:main",
+            "create-reactxpy-app = reactxpy.create_app:main",
         ]
     },
     include_package_data=True,

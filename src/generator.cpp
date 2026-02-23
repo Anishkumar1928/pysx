@@ -142,7 +142,7 @@ string transformUseState(string body){
             replace_end = call + 8;
         }
 
-        string replacement = "const [" + a + ", " + b + "] = Pysx.useState(" + arg + ");";
+        string replacement = "const [" + a + ", " + b + "] = ReactXPy.useState(" + arg + ");";
         body.replace(start, replace_end - start, replacement);
         pos = start + replacement.size();
     }
@@ -162,13 +162,13 @@ string transformUseEffect(string body){
         if(body.substr(i,9) == "useEffect"){
 
             // avoid double prefix
-            if(i>=5 && body.substr(i-5,5)=="Pysx"){
+            if(i>=8 && body.substr(i-8,8)=="ReactXPy"){
                 result += "useEffect";
                 i += 9;
                 continue;
             }
 
-            result += "Pysx.useEffect";
+            result += "ReactXPy.useEffect";
             i += 9;
         }
         else{
@@ -391,7 +391,7 @@ string Generator::generate(const ProgramNode& program)
 {
     string out;
 
-    out+="import * as Pysx from "
+    out+="import * as ReactXPy from "
          "\"../runtime/runtime.js\";\n\n";
 
     for(const auto& imp:program.imports)

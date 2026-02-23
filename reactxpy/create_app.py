@@ -8,19 +8,19 @@ def create_file(path, content):
 
 def main():
     if len(sys.argv) > 1 and sys.argv[1] in ["-h", "--help"]:
-        print("Usage: create-pysx-app [project-name]")
+        print("Usage: create-reactxpy-app [project-name]")
         print("\\nOptions:")
         print("  -h, --help       Show this help message and exit.")
-        print("  -v, --version    Show the version of create-pysx-app.")
+        print("  -v, --version    Show the version of create-reactxpy-app.")
         print("\\nExample:")
-        print("  create-pysx-app my-new-project")
+        print("  create-reactxpy-app my-new-project")
         sys.exit(0)
 
     if len(sys.argv) > 1 and sys.argv[1] in ["-v", "--version"]:
-        print("create-pysx-app version 0.1.0")
+        print("create-reactxpy-app version 0.1.0")
         sys.exit(0)
 
-    print("\\033[0;34mWelcome to create-pysx-app! Let's scaffold your new project.\\033[0m\\n")
+    print("\\033[0;34mWelcome to create-reactxpy-app! Let's scaffold your new project.\\033[0m\\n")
 
     project_name = ""
     if len(sys.argv) > 1:
@@ -42,7 +42,7 @@ def main():
         print(f"Error: Directory '{project_name}' already exists.")
         sys.exit(1)
         
-    print(f"\\n🚀 Creating a new PYSX project in {os.path.abspath(project_name)}...")
+    print(f"\\n🚀 Creating a new ReactXPy project in {os.path.abspath(project_name)}...")
     
     # Create directory structure
     dirs = [
@@ -121,7 +121,7 @@ function run(App) {
 // -----------------------------
 // Global API
 // -----------------------------
-window.Pysx = {
+window.ReactXPy = {
   run,
   useState,
   useEffect
@@ -134,7 +134,7 @@ window.Pysx = {
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>PYSX App</title>
+    <title>ReactXPy App</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <link rel="stylesheet" href="./style.css">
@@ -144,7 +144,7 @@ window.Pysx = {
     <script src="../runtime/runtime.js"></script>
     <script src="../dist/bundle.js"></script>
     <script>
-        Pysx.run(App);
+        ReactXPy.run(App);
         
         // Live Reload Hook
         let currentVersion = null;
@@ -248,14 +248,14 @@ import subprocess
 from pathlib import Path
 
 def main():
-    print("🚀 Building PYSX App...")
+    print("🚀 Building ReactXPy App...")
     
     os.makedirs("dist", exist_ok=True)
     compiled_files = []
     
     from shutil import which
-    if which("pysx") is None:
-        print("❌ Error: pysx compiler not found. Please install the pysx pip package globally.")
+    if which("reactxpy") is None:
+        print("❌ Error: reactxpy compiler not found. Please install the reactxpy pip package globally.")
         return
         
     for file in Path("src").rglob("*.pysx"):
@@ -263,12 +263,12 @@ def main():
         output_path = f"dist/{basename}.js"
         
         print(f"⚡ Compiling: {file} -> {output_path}")
-        subprocess.run(["pysx", str(file), "-o", output_path], check=True)
+        subprocess.run(["reactxpy", str(file), "-o", output_path], check=True)
         compiled_files.append(output_path)
         
     if compiled_files:
         print("\\n🔗 Linking into dist/bundle.js...")
-        subprocess.run(["pysx", "--bundle"] + compiled_files + ["dist/bundle.js"], check=True)
+        subprocess.run(["reactxpy", "--bundle"] + compiled_files + ["dist/bundle.js"], check=True)
         print("\\n✅ Success! Build complete.")
     else:
         print("❌ Error: No .pysx files found in src directory.")
@@ -323,7 +323,7 @@ def serve():
 
 def main():
     global BUILD_VERSION
-    print("🚀 Starting PYSX Live Development Server...")
+    print("🚀 Starting ReactXPy Live Development Server...")
     subprocess.run([sys.executable, "build.py"], check=False)
     
     server_thread = threading.Thread(target=serve, daemon=True)

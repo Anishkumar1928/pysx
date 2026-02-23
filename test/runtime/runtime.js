@@ -30,7 +30,7 @@ function run(App) {
 // -----------------------------
 // Global API
 // -----------------------------
-window.Pysx = {
+window.reactxpy = {
   run,
   useState,
   useEffect
