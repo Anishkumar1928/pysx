@@ -4,6 +4,10 @@ import sys
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
 
+# Read the README.md for the PyPI project description
+with open(os.path.join(os.path.dirname(__file__), "README.md"), encoding="utf-8") as f:
+    long_description = f.read()
+
 class ReactxpyBuildExt(build_ext):
     """Custom command to build the C++ reactxpy compiler using g++."""
     def run(self):
@@ -44,8 +48,10 @@ reactxpy_ext = Extension("reactxpy.dummy", sources=[])
 
 setup(
     name="reactxpy",
-    version="0.1.0",
+    version="0.1.1",
     description="ReactXPy compiler for web applications.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Anish Kumar",
     packages=find_packages(),
     ext_modules=[reactxpy_ext],
