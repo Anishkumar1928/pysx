@@ -1,34 +1,36 @@
-# PYSX (Python Syntax for React)
+# 🚀 PYSX (Python Syntax for React)
 
-PYSX is an innovative, lightning-fast compiler that lets you write beautiful, interactive web applications using clean and readable **Python syntax**, which natively compiles down directly into **React JavaScript** (`React.createElement`).
+Welcome to **PYSX**, a revolutionary framework that bridges the elegance of Python with the raw power of the React component ecosystem. PYSX is an ultra-fast, C++ based transpiler that allows developers to write feature-rich, interactive web applications using clean and readable Python syntax, entirely eliminating the configuration hell of modern JavaScript bundles.
 
-Stop fighting with Node.js configuration hell! With PYSX, you get the elegance of Python and the power of the React component ecosystem.
+If you love Python's indentation-based readability but need the dynamic, component-driven architecture of React, PYSX gives you both without needing Webpack, Vite, Babel, or Node.js running on your machine.
 
 ---
 
-## 🚀 Features (v1)
+## ✨ Core Features (v2)
 
-- **Python Function Syntax:** Define components cleanly using `def ComponentName(props):`.
-- **Built-in JSX:** Natively write HTML tags inside your Python functions.
-- **Props & Interpolation:** Pass data seamlessly using `{props}` and `{expressions}`.
-- **Native Event Handling:** Bind functions easily via `onClick={funcName}`.
-- **Conditional Rendering:** Powerful inline booleans like `{flag && <div class="badge">Active</div>}`.
-- **Zero-Config CLI Tooling:** Comes with a built-in project generator (`create-pysx-app`) and bundler. No Webpack, Vite, or Babel required!
-- **Lightning Fast:** The transpiler is built entirely in C++ for maximum compilation speed.
+- **Pure Python Syntax for Components:** Define your UI components using standard `def ComponentName(props):` definitions, free of brackets and JavaScript boilerplate.
+- **Native Inline JSX:** Seamlessly blend standard HTML/JSX tags directly inside your Python functions. The C++ parser intelligently distinguishes Python control flow from DOM declarations.
+- **State & Hooks Engine (NEW):** PYSX v2 natively supports React Hooks! Utilize `useState` and `useEffect` with standard Python assignments and lambdas.
+- **Dynamic Props & Interpolation:** Pass data across components naturally using `{props.value}` syntax. Evaluate complex math or logic inside interpolations instantly.
+- **Native Event Handling:** Bind Python functions directly to DOM events like `onClick={triggerFunc}` without dealing with `this` binding or context scoping.
+- **Powerful Conditional Rendering:** Drive UI states with intuitive boolean logic such as `{isActive && <div class="badge">Online</div>}` right inside the tree.
+- **Zero-Dependency CLI Scaffold:** Get started in zero seconds. The built-in `create-pysx-app` generator instantly architectures a complete project for you.
+- **Cross-Platform C++ Core:** The transpiler is compiled natively onto your machine (Windows `.exe`, macOS, or Linux) enabling lightning-fast, concurrent build times.
+- **Local Dev Server Hook:** PYSX ships with a multi-threaded, hot-reloading native Python watcher (`dev.py`), replacing the need for NPM servers.
 
 ---
 
 ## 📦 Installation
 
-To install `pysx` globally on your system, you just need Python. Run:
+PYSX is distributed globally via standard Python pip packages. Before beginning, ensure you are running Python 3.7+.
+
+To install the framework globally onto your machine:
 
 ```bash
 pip install pysx
 ```
 
-_(If developing locally, clone this repo and run `pip install -e .` from the root directory)._
-
-Ensure your installation was successful by checking the version:
+Verify your installation was successful and the native C++ binary was compiled by checking the CLI tool:
 
 ```bash
 pysx --version
@@ -37,107 +39,116 @@ pysx --version
 
 ---
 
-## 🛠️ Quick Start (Create a Project)
+## 🛠️ Quick Start
 
-PYSX comes with a brilliant interactive scaffolding tool modeled after modern frontend frameworks. To create your first app:
+PYSX ships with a state-of-the-art interactive CLI to generate standalone applications mimicking the best practices of modern frontend development.
 
-1. Run the interactive generator:
+1. **Scaffold a Project**
+   Run the project generator from anywhere in your terminal:
+
    ```bash
-   create-pysx-app
+   create-pysx-app my-awesome-app
    ```
-2. Type your project name (e.g., `my-awesome-app`) when prompted!
 
-3. Navigate into your new project, compile it, and open it:
+2. **Launch the Live Server**
+   Navigate into your new application and execute the pure-Python hot reloader:
    ```bash
    cd my-awesome-app
-   ./build.sh
-   open public/index.html
+   python3 dev.py
    ```
 
-Boom! You just built a React application exclusively using Python syntax.
+**That's it!** The `dev.py` script automatically watches your `src/` directory for filesystem changes. It instantly hot-recompiles your `.pysx` components into deeply-linked browser-safe Javascript bundles (`dist/bundle.js`) and serves it live at `http://localhost:3000`.
 
 ---
 
-## 📖 PYSX Syntax Overview
+## 📖 Comprehensive Syntax Guide
 
-### 1. Components & JSX
+### 1. Components & Standard JSX
 
-Components are defined just like Python functions using `def`. They return native JSX tags.
+PYSX treats components naturally. You declare them identically to standard Python functions. When you return HTML DOM tags, the compiler natively intercepts it and translates the structure into optimized `React.createElement` syntax trees.
 
 ```python
 # Greet.pysx
 def Greet(name):
     return <div class="greeting-card">
         <h3>Hello {name}!</h3>
-        <p>Welcome to PYSX.</p>
+        <p>Welcome to the PYSX ecosystem.</p>
     </div>
 ```
 
-### 2. Events and Logic
+### 2. State Hooks (`useState` & `useEffect`)
 
-You can define standard logic functions and seamlessly attach them to UI events without weird binding issues context binding.
+PYSX v2 fully embraces the React runtime. You can manage encapsulated component states easily by destructuring `useState` tuples, and orchestrate browser lifecycle features like API calls or Local Storage using `useEffect`.
 
 ```python
-# Counter.pysx
-def triggerAlert():
-    alert("Button was clicked!")
+# CounterApp.pysx
+def CounterApp():
+    # Native Python Tuple Destructuring
+    count, setCount = useState(0)
 
-def Counter():
-    return <div class="counter">
-        <button onClick={triggerAlert}>Click Me</button>
+    # Persist the count to the browser's storage whenever the `count` dependency updates
+    useEffect(lambda: localStorage.setItem("clicks", JSON.stringify(count)), [count])
+
+    def triggerIncrement():
+        setCount(count + 1)
+
+    return <div class="counter-panel">
+        <p>Total Clicks: {count}</p>
+        <button onClick={triggerIncrement}>Increment Value</button>
     </div>
 ```
 
-### 3. Conditional Rendering & Advanced Features
+### 3. Conditional UI & Component Composition
 
-PYSX v1's engine natively supports complex conditional elements, automatically translating `class="..."` properties into React's `{className: "..."}`. CSS classes and variables will just work natively.
-
-```python
-# Status.pysx
-def Status(isActive):
-    return <div>
-        <p>Current Status:</p>
-        {isActive && <div class="badge-success">Online</div>}
-    </div>
-```
-
-### 4. File Imports and Bundling
-
-Writing a large app? Split it up! Use simple `import` statements at the top of your file.
+PYSX supports infinitely nested component architectures. You can import modules seamlessly without Node syntax. It also securely translates HTML attributes (like `class`) into DOM-safe syntax (`className`) automatically.
 
 ```python
 # App.pysx
-import Greet
-import Counter
+import CounterApp
 
 def App():
-    return <main class="app">
-        <h1>Dashboard</h1>
-        <Greet name="Developer" />
-        <Counter />
+    isAdmin = True
+
+    return <main class="dashboard-wrapper">
+        <h1>Admin Control Panel</h1>
+
+        {isAdmin && <div class="secure-badge">Verified Session</div>}
+
+        <div class="widgets">
+            <CounterApp />
+        </div>
     </main>
 ```
 
-When you run the compiler (e.g., via `./build.sh`), PYSX will intelligently gather all components and emit a singular, deeply-linked, browser-safe `dist/bundle.js` script!
+---
+
+## ⚙️ How the Architecture Works
+
+1. **Native OS Compilation:** When you `pip install pysx`, your computer leverages its local `g++` compiler to build a hyper-optimized `.exe` (Windows) or binary (Unix) of the PYSX transpiler directly within your Python packages folder.
+2. **Lexical Analysis Engine:** The C++ compiler scans your `.pysx` files. It fundamentally understands the boundary between Python variable assignments, indentations, scopes, and HTML tag delimiters.
+3. **AST Transpilation:** The framework safely merges Javascript operators (like `||` and `&&`), mathematical calculations, and JSX scopes into raw, standalone Javascript mappings.
+4. **Dependency-Free Bundle:** The compiler bridges your states via a lightweight `runtime.js` hook memory wrapper. It drops ES module syntax entirely—so you don't even need a server! You can double-click `index.html` directly from a USB stick and the app will flawlessly function offline in standard browsers.
 
 ---
 
-## ⚙️ How it Works
+## 🔮 Development Roadmap
 
-1.  **Lexical Analysis & Parsing:** The C++ compiler scans your `.pysx` files, understanding the unique blending of Python whitespace, colons, and HTML tags.
-2.  **Transpilation:** The C++ generator translates the syntax tree into raw `React.createElement` syntax. HTML parameters (like `class`) are converted to their DOM property equivalents (like `className`), and Javascript reserved variables like `True`/`False` are corrected to boolean literals `true`/`false`.
-3.  **No `export` Noise:** PYSX strips out ES module syntax entirely from the bundled artifact. This means you do absolutely **not** need a local live-server (like `http-server`) simply to run your Javascript files! You can literally double-click `index.html` on your Desktop and it renders instantly.
+PYSX is an actively maintained open-source framework. The current horizon features include:
+
+- [x] Transpilation of Standard JSX directly to `React` API calls.
+- [x] Interactive State Management (`useState` Hooks).
+- [x] Application Lifecycle Memory (`useEffect` Hooks).
+- [x] Zero-Dependency Build Pipelines (`build.py` & `dev.py`).
+- [x] Native Microsoft Windows (`.exe`) Subprocess Compilation.
+- [ ] List Comprehension Syntax (e.g., `<item for item in array>`).
+- [ ] Asynchronous API Fetching (`async/await` components).
+- [ ] Deep Integrated Server-Side Python Routing.
 
 ---
 
-## 🔮 Roadmap (v2 & Beyond)
+### License
 
-PYSX is actively developed. The following features are currently being worked on for future releases:
-
-- [ ] Interactive state management (`useState` equivalent).
-- [ ] Hooks (`useEffect`, lifecycle mapping).
-- [ ] Support for inline array mapping (e.g., `<item for item in list>`).
-- [ ] Asynchronous components.
+**MIT License** - Build the incredible.
 
 ---
 

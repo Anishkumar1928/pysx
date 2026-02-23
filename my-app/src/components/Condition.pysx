@@ -1,5 +1,0 @@
-def Condition(flag):
-    return <div>
-        <p>Current flag: {flag}</p>
-        {flag && <div class="badge">Flag is TRUE ✅</div>}
-    </div>

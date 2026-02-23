@@ -1,8 +1,0 @@
-def inc():
-    alert("Clicked!")
-
-def Counter():
-    return <div>
-        <p>Variables and events supported in PYSX v2!</p>
-        <button onClick={inc}>Click Me</button>
-    </div>

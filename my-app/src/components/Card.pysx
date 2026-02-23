@@ -1,7 +1,0 @@
-def Card(title, children):
-    return <div class="card">
-        <h2 class="card-title">{title}</h2>
-        <div class="card-body">
-            {children}
-        </div>
-    </div>

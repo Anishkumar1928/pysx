@@ -10,7 +10,9 @@ def main():
 
     # Find the compiled C++ compiler binary relative to this script
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    compiler_path = os.path.join(current_dir, "pysx_compiler")
+    is_windows = sys.platform == "win32"
+    binary_name = "pysx_compiler.exe" if is_windows else "pysx_compiler"
+    compiler_path = os.path.join(current_dir, binary_name)
     
     if not os.path.exists(compiler_path):
         print(f"Error: PYSX compiler binary not found at {compiler_path}")
@@ -22,7 +24,10 @@ def main():
     
     try:
         # Replaces the current process with the compiler
-        os.execv(compiler_path, args)
+        if is_windows:
+            sys.exit(subprocess.call(args))
+        else:
+            os.execv(compiler_path, args)
     except OSError as e:
         print(f"Failed to execute compiler: {e}")
         sys.exit(1)

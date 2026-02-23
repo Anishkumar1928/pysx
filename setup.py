@@ -16,7 +16,10 @@ class PysxBuildExt(build_ext):
         source_dir = os.path.abspath("src")
         # Ensure we place the binary inside the Python package directory
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath("pysx.dummy")))
-        output_binary = os.path.join(extdir, "pysx_compiler")
+        
+        is_windows = sys.platform == "win32"
+        binary_name = "pysx_compiler.exe" if is_windows else "pysx_compiler"
+        output_binary = os.path.join(extdir, binary_name)
         
         # Ensure the output directory exists
         os.makedirs(extdir, exist_ok=True)

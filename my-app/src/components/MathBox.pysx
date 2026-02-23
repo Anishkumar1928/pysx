@@ -1,6 +1,0 @@
-def MathBox(a, b):
-    return <div>
-        <p>a = {a}</p>
-        <p>b = {b}</p>
-        <strong>Result of a * b = {a * b}</strong>
-    </div>

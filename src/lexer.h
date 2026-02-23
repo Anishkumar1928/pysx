@@ -40,6 +40,8 @@ enum TokenType {
     RPAREN,
     COLON,
     COMMA,
+    LBRACKET,
+    RBRACKET,
     STAR,
 
     STRING,

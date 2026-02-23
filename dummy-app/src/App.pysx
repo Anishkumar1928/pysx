@@ -1,0 +1,4 @@
+import TodoApp
+
+def App():
+    return <TodoApp />

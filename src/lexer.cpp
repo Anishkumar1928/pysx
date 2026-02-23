@@ -214,12 +214,20 @@ vector<Token> Lexer::tokenize(){
             continue;
         }
 
+        // NUMBERS
+        if(isdigit(peek())){
+            string num;
+            while(isdigit(peek()) || peek() == '.')
+                num += source[pos++];
+            tokens.push_back({IDENTIFIER, num});
+            continue;
+        }
+
         // IDENTIFIER + JS LITERALS ⭐ FIX
         if(isAlpha(peek())){
-
             string id;
-            while(isAlnum(peek()))
-                id+=source[pos++];
+            while(isAlnum(peek()) || peek() == '.' || peek() == '_')
+                id += source[pos++];
 
             if(id=="true")
                 tokens.push_back({TRUE,"true"});
@@ -235,8 +243,25 @@ vector<Token> Lexer::tokenize(){
 
         if(c=='('){tokens.push_back({LPAREN,"("});pos++;continue;}
         if(c==')'){tokens.push_back({RPAREN,")"});pos++;continue;}
+        if(c=='['){tokens.push_back({LBRACKET,"["});pos++;continue;}
+        if(c==']'){tokens.push_back({RBRACKET,"]"});pos++;continue;}
         if(c==':'){tokens.push_back({COLON,":"});pos++;continue;}
         if(c==','){tokens.push_back({COMMA,","});pos++;continue;}
+        if(c=='='){tokens.push_back({EQUAL,"="});pos++;continue;}
+
+        // Catch all unknown valid operators (like +, -, ||, &&, ;, !, ?)
+        if(!isSpace(c) && !isAlpha(c) && !isdigit(c)) {
+            string op;
+            while(pos < source.size() && !isSpace(peek()) && !isAlpha(peek()) && !isdigit(peek()) &&
+                  peek() != '(' && peek() != ')' && peek() != '[' && peek() != ']' && 
+                  peek() != '{' && peek() != '}' && peek() != ':' && peek() != ',' && peek() != '=' && peek() != '"') {
+                op += source[pos++];
+            }
+            if(!op.empty()) {
+                tokens.push_back({IDENTIFIER, op});
+                continue;
+            }
+        }
 
         pos++;
 

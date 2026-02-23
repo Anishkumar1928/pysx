@@ -1,5 +1,0 @@
-def Greet(name):
-    return <div>
-        <h3>Hello {name}!</h3>
-        <p>Props are working perfectly.</p>
-    </div>

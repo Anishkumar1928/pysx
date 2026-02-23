@@ -4,6 +4,8 @@
 using namespace std;
 
 // --------------------------------
+// Constructor
+// --------------------------------
 Parser::Parser(const vector<Token>& t) {
     tokens = t;
     pos = 0;
@@ -38,7 +40,7 @@ bool Parser::check(TokenType type) {
 }
 
 // =================================
-// PROGRAM
+// PROGRAM PARSER
 // =================================
 ProgramNode Parser::parseProgram() {
 
@@ -55,12 +57,20 @@ ProgramNode Parser::parseProgram() {
 }
 
 // =================================
-// ⭐ FUNCTION PARSER (FINAL)
+// FUNCTION PARSER
+// Supports:
+//
+// def App():
+//     statements...
+//     return <JSX>
+//
+// OR event functions
 // =================================
 FunctionNode Parser::parseFunction() {
 
     FunctionNode fn;
 
+    // def
     match(DEF);
 
     if (!check(IDENTIFIER))
@@ -83,30 +93,40 @@ FunctionNode Parser::parseFunction() {
     match(RPAREN);
     match(COLON);
 
-    // ---------- COMPONENT ----------
-    if (match(RETURN)) {
-        fn.jsx = parseJSX();
-        return fn;
-    }
-
-    // ---------- EVENT FUNCTION ----------
+    // ---------- BODY COLLECTION ----------
     string body;
 
-    while (!isAtEnd() && !check(DEF)) {
+    while (!isAtEnd()) {
+
+        // stop if next function begins
+        if (check(DEF))
+            break;
+
+        // ⭐ return JSX detected
+        if (match(RETURN)) {
+            fn.body = body;
+            fn.jsx = parseJSX();
+            return fn;
+        }
 
         Token t = advance();
 
+        // preserve strings
         if (t.type == STRING)
             body += "\"" + t.value + "\"";
         else
             body += t.value;
 
+        // controlled spacing
         if (t.type != LPAREN &&
             t.type != RPAREN &&
             t.type != COMMA)
+        {
             body += " ";
+        }
     }
 
+    // event-only function (no JSX)
     fn.body = body;
     fn.jsx = nullptr;
 
@@ -124,7 +144,7 @@ shared_ptr<JSXNode> Parser::parseJSX() {
     auto node = make_shared<JSXNode>();
     node->tag = tokens[pos - 1].value;
 
-    // props
+    // ---------- PROPS ----------
     while (check(ATTRIBUTE_NAME)) {
 
         string key = advance().value;
@@ -132,9 +152,9 @@ shared_ptr<JSXNode> Parser::parseJSX() {
 
         PropValue prop;
 
-        if (check(ATTRIBUTE_VALUE))
+        if (check(ATTRIBUTE_VALUE)) {
             prop.value = advance().value;
-
+        }
         else if (check(ATTRIBUTE_EXPR) || check(EXPRESSION)) {
             prop.isExpression = true;
             prop.value = advance().value;
@@ -143,19 +163,25 @@ shared_ptr<JSXNode> Parser::parseJSX() {
         node->props[key] = prop;
     }
 
+    // ---------- SELF CLOSING ----------
     if (match(SELF_CLOSE)) {
         node->selfClosing = true;
         return node;
     }
 
+    // ---------- CHILDREN ----------
     while (!isAtEnd()) {
 
         if (check(TEXT)) {
-            JSXChild c{CHILD_TEXT, advance().value};
+            JSXChild c;
+            c.type = CHILD_TEXT;
+            c.value = advance().value;
             node->children.push_back(c);
         }
         else if (check(EXPRESSION)) {
-            JSXChild c{CHILD_EXPR, advance().value};
+            JSXChild c;
+            c.type = CHILD_EXPR;
+            c.value = advance().value;
             node->children.push_back(c);
         }
         else if (check(TAG_OPEN)) {
@@ -169,7 +195,7 @@ shared_ptr<JSXNode> Parser::parseJSX() {
             return node;
         }
         else {
-            advance();
+            advance(); // skip unknown tokens safely
         }
     }
 
