@@ -1,0 +1,13 @@
+from CounterApp import CounterApp
+
+def App():
+    isAdmin = true
+
+    return <main class="dashboard-wrapper">
+        <h1>Anish Kumar</h1>
+        {isAdmin && <div class="secure-badge">Verified Session</div>}
+        
+        <div class="widgets">
+            <CounterApp />
+        </div>
+    </main>

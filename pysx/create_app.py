@@ -61,7 +61,7 @@ def main():
 import CounterApp
 
 def App():
-    isAdmin = True
+    isAdmin = true
 
     return <main class="dashboard-wrapper">
         <h1>Admin Control Panel</h1>
@@ -77,18 +77,13 @@ def App():
     # CounterApp.pysx
     counterapp_pysx = """
 def CounterApp():
-    # Native Python Tuple Destructuring
     count, setCount = useState(0)
 
-    # Persist the count to the browser's storage whenever the `count` dependency updates
     useEffect(lambda: localStorage.setItem("clicks", JSON.stringify(count)), [count])
-
-    def triggerIncrement():
-        setCount(count + 1)
 
     return <div class="counter-panel">
         <p>Total Clicks: {count}</p>
-        <button onClick={triggerIncrement}>Increment Value</button>
+        <button onClick={lambda: setCount(count + 1)}>Increment Value</button>
     </div>
 """
 
@@ -150,6 +145,15 @@ window.Pysx = {
     <script src="../dist/bundle.js"></script>
     <script>
         Pysx.run(App);
+        
+        // Live Reload Hook
+        let currentVersion = null;
+        setInterval(() => {
+            fetch('/version').then(res => res.text()).then(version => {
+                if (currentVersion === null) currentVersion = version;
+                else if (currentVersion !== version) location.reload();
+            }).catch(() => {});
+        }, 1000);
     </script>
 </body>
 </html>
@@ -282,6 +286,8 @@ import subprocess
 import threading
 from pathlib import Path
 
+BUILD_VERSION = 1
+
 def get_mtimes():
     mtimes = {}
     for p in Path("src").rglob("*.pysx"):
@@ -295,6 +301,16 @@ def serve():
     class QuietHandler(SimpleHTTPRequestHandler):
         def log_message(self, format, *args):
             pass # Keep terminal clean
+            
+        def do_GET(self):
+            if self.path == '/version':
+                self.send_response(200)
+                self.send_header('Content-type', 'text/plain')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(str(BUILD_VERSION).encode())
+            else:
+                super().do_GET()
 
     TCPServer.allow_reuse_address = True
     try:
@@ -306,6 +322,7 @@ def serve():
         sys.exit(1)
 
 def main():
+    global BUILD_VERSION
     print("🚀 Starting PYSX Live Development Server...")
     subprocess.run([sys.executable, "build.py"], check=False)
     
@@ -324,6 +341,7 @@ def main():
                 print("\\n✨ File change detected! Rebuilding...")
                 subprocess.run([sys.executable, "build.py"], check=False)
                 last_mtimes = current_mtimes
+                BUILD_VERSION += 1
                 
     except KeyboardInterrupt:
         print("\\n🛑 Stopping dev server...")

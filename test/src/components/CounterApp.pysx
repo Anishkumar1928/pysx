@@ -1,0 +1,9 @@
+def CounterApp():
+    count, setCount = useState(0)
+
+    useEffect(lambda: localStorage.setItem("clicks", JSON.stringify(count)), [count])
+
+    return <div class="counter-panel">
+        <p>Total Clicks: {count}</p>
+        <button onClick={lambda: setCount(count + 1)}>Increment Value</button>
+    </div>
