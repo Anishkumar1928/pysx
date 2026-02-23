@@ -146,11 +146,6 @@ PYSX is an actively maintained open-source framework. The current horizon featur
 
 ---
 
-### License
-
-**MIT License** - Build the incredible.
-
----
 
 ### License
 

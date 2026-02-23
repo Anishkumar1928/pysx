@@ -58,41 +58,37 @@ def main():
         
     # App.pysx
     app_pysx = """
-import TodoApp
+import CounterApp
 
 def App():
-    return <TodoApp />
+    isAdmin = True
+
+    return <main class="dashboard-wrapper">
+        <h1>Admin Control Panel</h1>
+        
+        {isAdmin && <div class="secure-badge">Verified Session</div>}
+        
+        <div class="widgets">
+            <CounterApp />
+        </div>
+    </main>
 """
 
-    # TodoApp.pysx
-    todoapp_pysx = """
-def TodoApp(props):
-    todos, setTodos = useState(JSON.parse(localStorage.getItem("todos")) || [])
-    inputValue, setInputValue = useState("")
+    # CounterApp.pysx
+    counterapp_pysx = """
+def CounterApp():
+    # Native Python Tuple Destructuring
+    count, setCount = useState(0)
 
-    useEffect(lambda: localStorage.setItem("todos", JSON.stringify(todos)), [todos])
+    # Persist the count to the browser's storage whenever the `count` dependency updates
+    useEffect(lambda: localStorage.setItem("clicks", JSON.stringify(count)), [count])
 
-    return <div class="todo-wrapper">
-        <div class="todo-card">
-            <div class="todo-header">
-                <h2>✨ Task Manager</h2>
-                <p>Manage your daily goals with PYSX v2 state hooks!</p>
-            </div>
-            
-            <div class="todo-input-group">
-                <input type="text" placeholder="What needs to be done?" value={inputValue} onChange={lambda e: setInputValue(e.target.value)} />
-                <button class="btn-primary" onClick={lambda: setInputValue("") || setTodos([...todos, {id: Date.now(), text: inputValue, done: false}])}>Add Task</button>
-            </div>
+    def triggerIncrement():
+        setCount(count + 1)
 
-            <div class="todo-list">
-                {todos.length === 0 ? React.createElement("p", {className: "empty-state"}, "No tasks yet! Add one above.") : todos.map(lambda t: React.createElement("div", {className: t.done ? "todo-item done" : "todo-item", key: t.id}, React.createElement("div", {className: "todo-content"}, React.createElement("input", {type: "checkbox", checked: t.done, onChange: lambda: setTodos(todos.map(lambda item: item.id === t.id ? {...item, done: !item.done} : item))}), React.createElement("span", null, t.text)), React.createElement("button", {className: "btn-icon red", onClick: lambda: setTodos(todos.filter(lambda item: item.id !== t.id))}, "🗑️")))}
-            </div>
-            
-            <div class="todo-footer">
-                <span>{todos.filter(lambda t: !t.done).length} items remaining</span>
-                <button class="btn-outline" onClick={lambda: setTodos([])}>Clear All</button>
-            </div>
-        </div>
+    return <div class="counter-panel">
+        <p>Total Clicks: {count}</p>
+        <button onClick={triggerIncrement}>Increment Value</button>
     </div>
 """
 
@@ -163,62 +159,82 @@ window.Pysx = {
     style_css = """
 :root {
     --bg-main: #f8fafc;
-    --sidebar-bg: #ffffff;
     --card-bg: #ffffff;
     --text-primary: #0f172a;
     --text-secondary: #64748b;
     --accent: #4f46e5;
     --accent-hover: #4338ca;
-    --border: #f1f5f9;
-    --danger: #ef4444;
-    --success: #10b981;
-    --warning: #f59e0b;
+    --success-bg: #dcfce7;
+    --success-text: #166534;
 }
 
 body {
     margin: 0;
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background-color: var(--bg-main);
     color: var(--text-primary);
-    -webkit-font-smoothing: antialiased;
     display: flex;
     justify-content: center;
-    padding-top: 50px;
+    padding-top: 60px;
 }
 
-h1, h2, h3, p { margin: 0; }
-button { font-family: inherit; cursor: pointer; transition: 0.2s; border: none; }
+.dashboard-wrapper {
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
 
-.btn-primary { background: var(--accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 6px rgba(79, 70, 229, 0.2); }
-.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
-.btn-outline { border: 1px solid #cbd5e1; background: white; padding: 10px 16px; border-radius: 8px; font-weight: 500; }
-.btn-outline:hover { background: #f8fafc; }
+h1 {
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
 
-/* Todo App Styling */
-.todo-wrapper { margin-bottom: 24px; width: 100vw; max-width: 600px;}
-.todo-card { background: var(--card-bg); border-radius: 20px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-.todo-header { display: flex; flex-direction: column; margin-bottom: 24px; }
-.todo-header h2 { font-size: 1.5rem; color: var(--text-primary); font-weight: 700; margin-bottom: 4px; }
-.todo-header p { color: var(--text-secondary); font-size: 0.9rem; }
+.secure-badge {
+    display: inline-block;
+    background: var(--success-bg);
+    color: var(--success-text);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
 
-.todo-input-group { display: flex; gap: 12px; margin-bottom: 32px; }
-.todo-input-group input { flex: 1; padding: 14px 20px; border-radius: 12px; border: 1px solid var(--border); background: #f8fafc; font-size: 1rem; color: var(--text-primary); outline: none; transition: 0.2s; }
-.todo-input-group input:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
-.todo-input-group button { padding: 14px 24px; border-radius: 12px; font-weight: 600; white-space: nowrap; }
+.counter-panel {
+    background: #f1f5f9;
+    padding: 24px;
+    border-radius: 12px;
+}
 
-.todo-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-.todo-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: #f8fafc; border-radius: 12px; border: 1px solid transparent; transition: 0.2s; }
-.todo-item:hover { background: white; border-color: var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
-.todo-item.done span { text-decoration: line-through; color: var(--text-secondary); opacity: 0.7; }
-.todo-content { display: flex; align-items: center; gap: 16px; font-weight: 500; font-size: 1.05rem; color: var(--text-primary); }
-.todo-content input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--success); }
+.counter-panel p {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 0;
+    color: var(--text-secondary);
+}
 
-.empty-state { text-align: center; color: var(--text-secondary); font-size: 0.95rem; padding: 32px 0; background: #f8fafc; border-radius: 12px; border: 1px dashed var(--border); }
+button {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+    width: 100%;
+}
 
-.todo-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; }
-.todo-footer button { padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; }
-.btn-icon { background: transparent; border: none; font-size: 1.25rem; color: var(--text-secondary); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-.btn-icon:hover { background: #fee2e2; color: var(--danger); }
+button:hover {
+    background: var(--accent-hover);
+    transform: translateY(-2px);
+}
 """
 
     # build.py
@@ -318,7 +334,7 @@ if __name__ == "__main__":
 """
 
     create_file(os.path.join(project_name, "src", "App.pysx"), app_pysx)
-    create_file(os.path.join(project_name, "src", "components", "TodoApp.pysx"), todoapp_pysx)
+    create_file(os.path.join(project_name, "src", "components", "CounterApp.pysx"), counterapp_pysx)
     create_file(os.path.join(project_name, "runtime", "runtime.js"), runtime_js)
     create_file(os.path.join(project_name, "public", "index.html"), index_html)
     create_file(os.path.join(project_name, "public", "style.css"), style_css)
