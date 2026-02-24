@@ -111,14 +111,18 @@ FunctionNode Parser::parseFunction() {
 
         Token t = advance();
 
-        // preserve strings (output as JS template literals to support multiline)
+        // preserve strings (output as standard JS strings, escaping newlines to support multiline)
         if (t.type == STRING) {
             string escaped;
             for(char c : t.value) {
-                if(c == '`') escaped += "\\`";
+                if(c == '"') escaped += "\\\"";
+                else if(c == '\\') escaped += "\\\\";
+                else if(c == '\n') escaped += "\\n";
+                else if(c == '\r') escaped += "\\r";
+                else if(c == '\t') escaped += "\\t";
                 else escaped += c;
             }
-            body += "`" + escaped + "`";
+            body += "\"" + escaped + "\"";
         }
         else
             body += t.value;

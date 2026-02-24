@@ -63,12 +63,12 @@ import CounterApp
 def App():
     isAdmin = true
 
-    return <main class="dashboard-wrapper">
+    return <main Class="dashboard-wrapper">
         <h1>Admin Control Panel</h1>
         
-        {isAdmin && <div class="secure-badge">Verified Session</div>}
+        {isAdmin && <div Class="secure-badge">Verified Session</div>}
         
-        <div class="widgets">
+        <div Class="widgets">
             <CounterApp />
         </div>
     </main>
@@ -81,7 +81,7 @@ def CounterApp():
 
     useEffect(lambda: localStorage.setItem("clicks", JSON.stringify(count)), [count])
 
-    return <div class="counter-panel">
+    return <div Class="counter-panel">
         <p>Total Clicks: {count}</p>
         <button onClick={lambda: setCount(count + 1)}>Increment Value</button>
     </div>

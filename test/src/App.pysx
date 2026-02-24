@@ -3,11 +3,11 @@ from CounterApp import CounterApp
 def App():
     isAdmin = True
 
-    return <main class="dashboard-wrapper">
+    return <main Class="dashboard-wrapper">
         <h1>Anish Kumar</h1>
-        {isAdmin && <div class="secure-badge">Verified Session</div>}
+        {isAdmin && <div Class="secure-badge">Verified Session</div>}
         
-        <div class="widgets">
+        <div Class="widgets">
             <CounterApp />
         </div>
     </main>

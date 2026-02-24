@@ -1,4 +1,4 @@
 def Greet(name):
-    return <div class="card">
+    return <div Class="card">
         Hello {name}
     </div>

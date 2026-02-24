@@ -274,6 +274,10 @@ vector<Token> Lexer::tokenize(){
         if(c==':'){tokens.push_back({COLON,":"});pos++;continue;}
         if(c==','){tokens.push_back({COMMA,","});pos++;continue;}
         if(c=='='){tokens.push_back({EQUAL,"="});pos++;continue;}
+        
+        // Add Brace Token Parsers for valid internal JS Mapping
+        if(c=='{'){tokens.push_back({IDENTIFIER,"{"});pos++;continue;}
+        if(c=='}'){tokens.push_back({IDENTIFIER,"}"});pos++;continue;}
 
         // Catch all unknown valid operators (like +, -, ||, &&, ;, !, ?)
         if(!isSpace(c) && !isAlpha(c) && !isdigit(c)) {

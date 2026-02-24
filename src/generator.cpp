@@ -227,6 +227,9 @@ string compileInlineJSX(const string& jsx){
         string attrs = tagStr.substr(spacePos + 1);
 
         size_t classPos = attrs.find("class=");
+        if (classPos == string::npos) classPos = attrs.find("Class=");
+        if (classPos == string::npos) classPos = attrs.find("className=");
+        
         if (classPos != string::npos) {
             size_t q1 = attrs.find('"', classPos);
             size_t q2 = (q1 != string::npos) ? attrs.find('"', q1 + 1) : string::npos;
@@ -267,7 +270,7 @@ string propsToJS(shared_ptr<JSXNode> node,
         if(!first) r+=", ";
 
         string key =
-            (p.first=="class")
+            (p.first=="class" || p.first=="Class" || p.first=="className")
             ? "className"
             : p.first;
 
@@ -348,6 +351,47 @@ string generateJSX(shared_ptr<JSXNode> node){
 }
 
 // --------------------------------
+// STRING MASKING UTILS (Prevent Hook Mutation Inside Strings)
+// --------------------------------
+string maskStrings(string body, vector<string>& literals) {
+    string out;
+    size_t i = 0;
+    while(i < body.size()) {
+        if(body[i] == '`' || body[i] == '"' || body[i] == '\'') {
+            char q = body[i];
+            size_t start = i;
+            i++;
+            while(i < body.size() && body[i] != q) {
+                if(body[i] == '\\' && i + 1 < body.size()) {
+                    i += 2;
+                } else {
+                    i++;
+                }
+            }
+            if(i < body.size()) i++;
+            literals.push_back(body.substr(start, i - start));
+            out += "__STR" + to_string(literals.size() - 1) + "__";
+        } else {
+            out += body[i];
+            i++;
+        }
+    }
+    return out;
+}
+
+string unmaskStrings(string body, const vector<string>& literals) {
+    for(size_t i = 0; i < literals.size(); i++) {
+        string token = "__STR" + to_string(i) + "__";
+        size_t pos = 0;
+        while((pos = body.find(token, pos)) != string::npos) {
+            body.replace(pos, token.length(), literals[i]);
+            pos += literals[i].length();
+        }
+    }
+    return body;
+}
+
+// --------------------------------
 // FUNCTION GENERATOR
 // --------------------------------
 string generateFunction(const FunctionNode& fn){
@@ -357,11 +401,15 @@ string generateFunction(const FunctionNode& fn){
     out+="function "+fn.name+"(props){\n";
 
     if(!fn.body.empty()){
+        vector<string> literals;
+        string body = maskStrings(fn.body, literals);
 
-        string body = transformUseState(fn.body);
+        body = transformUseState(body);
         body = transformUseEffect(body);
         body = transformPythonKeywords(body);
         body = transformLambda(body);
+
+        body = unmaskStrings(body, literals);
 
         out+="  "+body+";\n";
     }

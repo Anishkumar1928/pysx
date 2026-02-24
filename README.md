@@ -14,7 +14,7 @@ If you love Python's indentation-based readability but need the dynamic, compone
 - **Advanced AST Lexical Engine (v0.1.3):** The C++ parser natively processes single quotes (`'`), Javascript backticks (`` ` ``), and pythonic multiline triple quotes (`"""`). It actively converts multiline text elements into native ES6 Template literals!
 - **Dynamic Props & Interpolation:** Pass data across components naturally using `{props.value}` syntax. Evaluate complex math or logic inside interpolations instantly.
 - **Native Event Handling:** Bind Python functions directly to DOM events like `onClick={triggerFunc}` without dealing with `this` binding or context scoping.
-- **Powerful Conditional Rendering:** Drive UI states with intuitive boolean logic such as `{isActive && <div class="badge">Online</div>}` right inside the tree.
+- **Powerful Conditional Rendering:** Drive UI states with intuitive boolean logic such as `{isActive && <div Class="badge">Online</div>}` right inside the tree.
 - **Zero-Dependency CLI Scaffold:** Get started in zero seconds. The built-in `create-reactxpy-app` generator instantly architectures a complete project for you.
 - **Cross-Platform C++ Core:** The transpiler is compiled natively onto your machine (Windows `.exe`, macOS, or Linux) enabling lightning-fast, concurrent build times.
 - **Local Dev Server Hook:** ReactXPy ships with a multi-threaded, hot-reloading native Python watcher (`dev.py`), replacing the need for NPM servers.
@@ -71,7 +71,7 @@ ReactXPy treats components naturally. You declare them identically to standard P
 ```python
 # Greet.reactxpy
 def Greet(name):
-    return <div class="greeting-card">
+    return <div Class="greeting-card">
         <h3>Hello {name}!</h3>
         <p>Welcome to the ReactXPy ecosystem.</p>
     </div>
@@ -93,7 +93,7 @@ def CounterApp():
     def triggerIncrement():
         setCount(count + 1)
 
-    return <div class="counter-panel">
+    return <div Class="counter-panel">
         <p>Total Clicks: {count}</p>
         <button onClick={triggerIncrement}>Increment Value</button>
     </div>
@@ -110,12 +110,12 @@ import CounterApp
 def App():
     isAdmin = True
 
-    return <main class="dashboard-wrapper">
+    return <main Class="dashboard-wrapper">
         <h1>Admin Control Panel</h1>
 
-        {isAdmin && <div class="secure-badge">Verified Session</div>}
+        {isAdmin && <div Class="secure-badge">Verified Session</div>}
 
-        <div class="widgets">
+        <div Class="widgets">
             <CounterApp />
         </div>
     </main>

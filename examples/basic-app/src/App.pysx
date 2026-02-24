@@ -2,12 +2,12 @@ def inc():
     alert("🔥 Works!")
 
 def Item(name, price):
-    return <div class="card">
+    return <div Class="card">
         {name} = {price * 2}
     </div>
 
 def App():
-    return <div class="box">
+    return <div Class="box">
 
         <h1>PYSX Full Test</h1>
 

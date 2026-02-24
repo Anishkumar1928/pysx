@@ -1,4 +1,4 @@
 def Card(text):
-    return <div class="card">
+    return <div Class="card">
         {text}
     </div>
