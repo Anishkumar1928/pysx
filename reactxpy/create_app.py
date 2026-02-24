@@ -2,7 +2,7 @@ import os
 import sys
 
 def create_file(path, content):
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8') as f:
         f.write(content.strip() + '\n')
     print(f"Created {path}")
 

@@ -48,7 +48,7 @@ reactxpy_ext = Extension("reactxpy.dummy", sources=[])
 
 setup(
     name="reactxpy",
-    version="0.1.1",
+    version="0.1.2",
     description="ReactXPy compiler for web applications.",
     long_description=long_description,
     long_description_content_type="text/markdown",
