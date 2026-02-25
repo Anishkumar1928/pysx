@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ReactXPy App</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script src="../runtime/runtime.js"></script>
+    <script type="module">
+        import App from "../dist/App.js";
+        ReactXPy.run(App);
+        
+        // Live Reload Hook
+        let currentVersion = null;
+        setInterval(() => {
+            fetch('/version').then(res => res.text()).then(version => {
+                if (currentVersion === null) currentVersion = version;
+                else if (currentVersion !== version) location.reload();
+            }).catch(() => {});
+        }, 1000);
+    </script>
+</body>
+</html>

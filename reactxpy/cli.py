@@ -5,7 +5,7 @@ import subprocess
 def main():
     # Handle version flags directly in the wrapper
     if len(sys.argv) > 1 and sys.argv[1] in ["-v", "--version"]:
-        print("reactxpy version 0.1.0")
+        print("reactxpy version 0.3.0")
         sys.exit(0)
 
     # Find the compiled C++ compiler binary relative to this script

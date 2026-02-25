@@ -10,9 +10,9 @@
 <body>
     <div id="root"></div>
     <script src="../runtime/runtime.js"></script>
-    <script src="../dist/bundle.js"></script>
-    <script>
-        Pysx.run(App);
+    <script type="module">
+        import App from '../dist/App.js';
+        ReactXPy.run(App);
     </script>
 </body>
 </html>

@@ -43,24 +43,22 @@ bool Parser::check(TokenType type) {
 // IMPORT PARSER
 // =================================
 ImportNode Parser::parseImport() {
+
     ImportNode imp;
     imp.type = IMPORT_DEFAULT;
-    
+
     match(IMPORT);
-    
-    if (check(IDENTIFIER)) {
-        imp.module = advance().value;
-    } else {
+
+    if (!check(IDENTIFIER))
         throw runtime_error("Expected identifier after import");
-    }
-    
-    // consume optional 'from' "path" string
+
+    imp.module = advance().value;
+
     if (match(FROM)) {
-        if (check(STRING)) {
-            advance(); 
-        }
+        if (check(STRING))
+            advance();
     }
-    
+
     return imp;
 }
 
@@ -72,10 +70,13 @@ ProgramNode Parser::parseProgram() {
     ProgramNode program;
 
     while (!isAtEnd()) {
+
         if (check(IMPORT))
             program.imports.push_back(parseImport());
+
         else if (check(DEF))
             program.functions.push_back(parseFunction());
+
         else
             advance();
     }
@@ -84,20 +85,13 @@ ProgramNode Parser::parseProgram() {
 }
 
 // =================================
-// FUNCTION PARSER
-// Supports:
-//
-// def App():
-//     statements...
-//     return <JSX>
-//
-// OR event functions
+// FUNCTION PARSER  ⭐ FIXED
+// Proper Python INDENT → JS blocks
 // =================================
 FunctionNode Parser::parseFunction() {
 
     FunctionNode fn;
 
-    // def
     match(DEF);
 
     if (!check(IDENTIFIER))
@@ -105,7 +99,7 @@ FunctionNode Parser::parseFunction() {
 
     fn.name = advance().value;
 
-    // ---------- PARAMETERS ----------
+    // -------- parameters --------
     match(LPAREN);
 
     while (!check(RPAREN) && !isAtEnd()) {
@@ -120,53 +114,68 @@ FunctionNode Parser::parseFunction() {
     match(RPAREN);
     match(COLON);
 
-    // ---------- BODY COLLECTION ----------
     string body;
+    int indentLevel = 0;
 
+    // =============================
+    // BODY COLLECTION (REAL FIX)
+    // =============================
     while (!isAtEnd()) {
 
-        // stop if next function begins
-        if (check(DEF))
+        // next function begins
+        if (check(DEF) && indentLevel == 0)
             break;
 
-        // ⭐ return JSX detected
+        // ----- INDENT -----
+        if (match(INDENT)) {
+            body += "{\n";
+            indentLevel++;
+            continue;
+        }
+
+        // ----- DEDENT -----
+        if (match(DEDENT)) {
+            body += "}\n";
+            indentLevel--;
+            continue;
+        }
+
+        // ----- RETURN -----
         if (match(RETURN)) {
-            fn.body = body;
-            fn.jsx = parseJSX();
-            return fn;
+            body += "return ";
+            continue;
+        }
+
+        // ----- INLINE JSX -----
+        if (check(TAG_OPEN)) {
+            fn.jsx_list.push_back(parseJSX());
+            body += "__JSX" + to_string(fn.jsx_list.size() - 1) + "__ ";
+            continue;
         }
 
         Token t = advance();
 
-        // preserve strings (output as standard JS strings, escaping newlines to support multiline)
+        // preserve strings safely
         if (t.type == STRING) {
+
             string escaped;
-            for(char c : t.value) {
-                if(c == '"') escaped += "\\\"";
-                else if(c == '\\') escaped += "\\\\";
-                else if(c == '\n') escaped += "\\n";
-                else if(c == '\r') escaped += "\\r";
-                else if(c == '\t') escaped += "\\t";
-                else escaped += c;
+            for(char c : t.value){
+                if(c=='"') escaped+="\\\"";
+                else if(c=='\\') escaped+="\\\\";
+                else if(c=='\n') escaped+="\\n";
+                else escaped+=c;
             }
+
             body += "\"" + escaped + "\"";
         }
-        else
+        else {
             body += t.value;
-
-        // controlled spacing
-        if (t.type != LPAREN &&
-            t.type != RPAREN &&
-            t.type != COMMA)
-        {
-            body += " ";
         }
+
+        body += " ";
     }
 
-    // event-only function (no JSX)
     fn.body = body;
-    fn.jsx = nullptr;
-
     return fn;
 }
 
@@ -181,7 +190,7 @@ shared_ptr<JSXNode> Parser::parseJSX() {
     auto node = make_shared<JSXNode>();
     node->tag = tokens[pos - 1].value;
 
-    // ---------- PROPS ----------
+    // ---------- props ----------
     while (check(ATTRIBUTE_NAME)) {
 
         string key = advance().value;
@@ -200,13 +209,13 @@ shared_ptr<JSXNode> Parser::parseJSX() {
         node->props[key] = prop;
     }
 
-    // ---------- SELF CLOSING ----------
+    // self closing
     if (match(SELF_CLOSE)) {
         node->selfClosing = true;
         return node;
     }
 
-    // ---------- CHILDREN ----------
+    // ---------- children ----------
     while (!isAtEnd()) {
 
         if (check(TEXT)) {
@@ -232,7 +241,7 @@ shared_ptr<JSXNode> Parser::parseJSX() {
             return node;
         }
         else {
-            advance(); // skip unknown tokens safely
+            advance();
         }
     }
 

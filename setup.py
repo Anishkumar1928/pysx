@@ -17,7 +17,7 @@ class ReactxpyBuildExt(build_ext):
         except OSError:
             raise RuntimeError("g++ must be installed to build ReactXPy")
 
-        source_dir = os.path.abspath("src")
+        source_dir = os.path.abspath("compiler")
         # Ensure we place the binary inside the Python package directory
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath("reactxpy.dummy")))
         
@@ -48,7 +48,7 @@ reactxpy_ext = Extension("reactxpy.dummy", sources=[])
 
 setup(
     name="reactxpy",
-    version="0.2.1",
+    version="0.3.0",
     description="ReactXPy compiler for web applications.",
     long_description=long_description,
     long_description_content_type="text/markdown",

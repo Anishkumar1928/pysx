@@ -1,0 +1,136 @@
+# DocsApp.pysx
+
+def Navbar():
+    return <nav Class="top-header">
+        <a href="#" Class="header-logo">
+            <svg viewBox="-11.5 -10.23174 23 20.46348" Class="logo-icon">
+              <circle cx="0" cy="0" r="2.05"/>
+              <g stroke-width="1" fill="none">
+                <ellipse rx="11" ry="4.2"/>
+                <ellipse rx="11" ry="4.2" transform="rotate(60)"/>
+                <ellipse rx="11" ry="4.2" transform="rotate(120)"/>
+              </g>
+            </svg>
+            ReactXPy
+        </a>
+        <div Class="header-search">
+            <span>🔍 Search...</span>
+        </div>
+    </nav>
+
+def SidebarLink(props):
+    id = props.id
+    title = props.title
+    activeId = props.activeId
+    setActiveId = props.setActiveId
+    isSoon = props.isSoon
+
+    isActive = Object.is(id, activeId)
+    className = isActive ? "sidebar-link active" : "sidebar-link"
+
+    # ReactXPy supports standard Python ternary maps
+    badge = None
+    badge = <span Class="badge-soon">Soon</span> if isSoon else None
+
+    return <a Class={className} href={"#" + id} onClick={lambda e: setActiveId(id)}>
+        <span>{title}</span>
+        {badge}
+    </a>
+
+def SidebarLeft(props):
+    activeId = props.activeId
+    setActiveId = props.setActiveId
+
+    return <aside Class="sidebar-left">
+        <h4 Class="nav-group-title">GET STARTED</h4>
+        <SidebarLink id="quickstart" title="Quick Start" activeId={activeId} setActiveId={setActiveId} isSoon={False} />
+        
+        <h4 Class="nav-group-title">LEARN REACTXPY</h4>
+        <SidebarLink id="components" title="Defining Components" activeId={activeId} setActiveId={setActiveId} isSoon={False} />
+        <SidebarLink id="jsx" title="Writing Markup with JSX" activeId={activeId} setActiveId={setActiveId} isSoon={False} />
+        <SidebarLink id="arrays" title="Rendering Lists" activeId={activeId} setActiveId={setActiveId} isSoon={False} />
+        <SidebarLink id="lambdas" title="Responding to Events" activeId={activeId} setActiveId={setActiveId} isSoon={False} />
+        
+        <h4 Class="nav-group-title">STATE MANAGEMENT</h4>
+        <SidebarLink id="hooks" title="State: A Component's Memory" activeId={activeId} setActiveId={setActiveId} isSoon={False} />
+        <SidebarLink id="effect" title="Lifecycle Effects" activeId={activeId} setActiveId={setActiveId} isSoon={False} />
+        <SidebarLink id="context" title="Passing Data Deeply" activeId={activeId} setActiveId={setActiveId} isSoon={True} />
+        <SidebarLink id="reducers" title="Extracting State Logic" activeId={activeId} setActiveId={setActiveId} isSoon={True} />
+        
+        <h4 Class="nav-group-title">ESCAPE HATCHES</h4>
+        <SidebarLink id="refs" title="Referencing Values" activeId={activeId} setActiveId={setActiveId} isSoon={True} />
+        <SidebarLink id="dom" title="Manipulating the DOM" activeId={activeId} setActiveId={setActiveId} isSoon={True} />
+        
+        <h4 Class="nav-group-title">SERVER COMPONENTS</h4>
+        <SidebarLink id="rsc" title="Server Components" activeId={activeId} setActiveId={setActiveId} isSoon={True} />
+        <SidebarLink id="suspense" title="Server Actions" activeId={activeId} setActiveId={setActiveId} isSoon={True} />
+    </aside>
+
+def CodeBlock(props):
+    code = props.code
+    title = props.title
+
+    return <div Class="code-wrapper">
+        <div Class="code-header">{title}</div>
+        <pre Class="code-pre"><code>{code}</code></pre>
+    </div>
+
+def MainContent(props):
+    activeId = props.activeId
+
+    demo_code = """def MyButton():
+    return <button>I'm a button</button>
+
+def MyApp():
+    return <div>
+        <h1>Welcome to my app</h1>
+        <MyButton />
+    </div>"""
+
+    if Object.is(activeId, "quickstart"):
+        return <div Class="doc-section" id="quickstart">
+            <h1 Class="hero-text">Quick Start</h1>
+            <p Class="hero-sub">Welcome to the ReactXPy documentation! This page will give you an introduction to the 80% of ReactXPy concepts that you will use on a daily basis.</p>
+            
+            <h2 Class="section-title">Creating and nesting components</h2>
+            <div Class="section-content">
+                <p>ReactXPy apps are made out of components. A component is a piece of the UI (user interface) that has its own logic and appearance. A component can be as small as a button, or as large as an entire page.</p>
+                <p>ReactXPy components are Python functions that return markup:</p>
+                <CodeBlock title="App.pysx" code={demo_code} />
+                <p>Notice that <code>&lt;MyButton /&gt;</code> starts with a capital letter. That's how you know it's a React component. React component names must always start with a capital letter, while HTML tags must be lowercase.</p>
+            </div>
+        </div>
+
+    return <div Class="doc-section">
+        <h1 Class="hero-text">{activeId} Features</h1>
+        <p Class="hero-sub">This section is currently being expanded. Check back for more Pythonic React examples soon!</p>
+    </div>
+
+def SidebarRight():
+    return <aside Class="sidebar-right">
+        <div Class="toc-title">On this page</div>
+        <a href="#quickstart" Class="toc-link">Quick Start</a>
+        <a href="#components" Class="toc-link">Creating and nesting components</a>
+        <a href="#writing-markup" Class="toc-link">Writing markup with JSX</a>
+        <a href="#displaying-data" Class="toc-link">Displaying data</a>
+        <a href="#conditional-rendering" Class="toc-link">Conditional rendering</a>
+        <a href="#rendering-lists" Class="toc-link">Rendering lists</a>
+        <a href="#responding-to-events" Class="toc-link">Responding to events</a>
+        <a href="#updating-the-screen" Class="toc-link">Updating the screen</a>
+        <a href="#using-hooks" Class="toc-link">Using Hooks</a>
+        <a href="#sharing-data" Class="toc-link">Sharing data between components</a>
+    </aside>
+
+def DocsApp():
+    activeId, setActiveId = useState("quickstart")
+
+    return <div Class="docs-layout">
+        <Navbar />
+        <SidebarLeft activeId={activeId} setActiveId={setActiveId} />
+        
+        <main Class="main-content">
+            <MainContent activeId={activeId} />
+        </main>
+
+        <SidebarRight />
+    </div>

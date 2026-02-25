@@ -1,2 +1,2 @@
-include src/*.cpp
-include src/*.h
+include compiler/*.cpp
+include compiler/*.h

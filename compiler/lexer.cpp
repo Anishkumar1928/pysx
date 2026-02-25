@@ -139,6 +139,12 @@ vector<Token> Lexer::tokenize(){
             pos+=6;
             continue;
         }
+
+        // PYTHON COMMENTS
+        if(!insideJSX && c == '#') {
+            while(pos < source.size() && peek() != '\n' && peek() != '\r') pos++;
+            continue;
+        }
         
         // FROM
         if(source.compare(pos,4,"from")==0 && !isAlnum(peek(4))){

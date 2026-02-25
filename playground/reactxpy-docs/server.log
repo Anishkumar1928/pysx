@@ -1,0 +1,18 @@
+✅ Compiled → dist/App.js
+--- SidebarLink RAW BODY ---
+{
+id = props.id title = props.title activeId = props.activeId setActiveId = props.setActiveId isSoon = props.isSoon isActive = Object.is ( id , activeId ) className = isActive ? "sidebar-link active" : "sidebar-link" badge = null badge = __JSX0__ if isSoon else null return __JSX1__ }
+
+----------------------------
+--- SidebarLink AFTER STRIP ---
+
+id = props.id title = props.title activeId = props.activeId setActiveId = props.setActiveId isSoon = props.isSoon isActive = Object.is ( id , activeId ) className = isActive ? "sidebar-link active" : "sidebar-link" badge = null badge = __JSX0__ if isSoon else null return __JSX1__ 
+----------------------------
+✅ Compiled → dist/DocsApp.js
+✅ Compiled → dist/CounterApp.js
+🚀 Building ReactXPy App...
+⚡ Compiling: src/App.pysx -> dist/App.js
+⚡ Compiling: src/components/DocsApp.pysx -> dist/DocsApp.js
+⚡ Compiling: src/components/CounterApp.pysx -> dist/CounterApp.js
+
+✅ Success! Build complete.

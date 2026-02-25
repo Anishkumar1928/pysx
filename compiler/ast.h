@@ -41,7 +41,7 @@ struct FunctionNode {
     // ⭐ PARAMETERS (FIX)
     std::vector<std::string> params;
 
-    std::shared_ptr<JSXNode> jsx;
+    std::vector<std::shared_ptr<JSXNode>> jsx_list;
 
     // event body
     std::string body;
