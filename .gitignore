@@ -21,3 +21,12 @@ pysx_compiler
 # IDE
 .vscode/
 .idea/
+
+# logs
+*.log
+
+
+# build
+dist/
+build/
+*.egg-info
