@@ -1,0 +1,14 @@
+import CounterApp
+
+def App():
+    isAdmin = true
+
+    return <main Class="dashboard-wrapper">
+        <h1>Admin Control Panel</h1>
+        
+        {isAdmin && <div Class="secure-badge">Verified Session</div>}
+        
+        <div Class="widgets">
+            <CounterApp />
+        </div>
+    </main>

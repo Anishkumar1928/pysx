@@ -1,6 +1,0 @@
-def DocsApp():
-    DOCS_DATA = {
-        "c1": '''def Button(label):
-    return <button>Click</button>'''
-    }
-    return <h1>Test</h1>
